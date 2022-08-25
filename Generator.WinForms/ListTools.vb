@@ -1,9 +1,10 @@
-﻿
-Imports System.Threading.Tasks
-Imports System.Linq
+﻿Imports System.Threading.Tasks
+Imports Generator.Core
 
 
 Public Class ListTools
+
+    Dim ViewModel = New ListToolsViewModel()
 
     Private Sub Button1_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button1.Click
 
@@ -13,34 +14,14 @@ Public Class ListTools
 
     End Sub
 
-    Private Sub condenseEnums()
-        Dim myString As String = TextBox1.Text
-        MsgBox(myString)
-        Dim myList As List(Of String) = myString.Split(",").ToList
-        Dim outlist As New List(Of String)
-        For Each item In myList
-            If outlist.Contains(item) = False Then
-                outlist.Add(item)
-                outputTextbox.Text &= item & "," & vbNewLine
-            End If
-            'For Each item In From item1 In (From item1 In  Where item1 <> "" Select item1) Where myList.Contains(item1) = False
-            '    
-
-        Next
-
-
-    End Sub
-
 
 
     Private Sub Button3_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button3.Click
         Dim strtemp As String = TextBox1.Text.Replace(Chr(10), "#")
-        Dim aryTemp() As String = strtemp.split(CChar("#"))
+        Dim aryTemp() As String = strtemp.Split(CChar("#"))
 
         For x As Integer = 0 To aryTemp.Length - 1 Step 1
             Dim ary() = aryTemp(x).Split("""")
-            'Dim strtemp2 As String = aryTemp(x).Replace("Case """, "")
-            'Dim str1st As Integer = InStr(strtemp2, """")
             strtemp += ary(1) & ","
 
         Next
@@ -51,12 +32,12 @@ Public Class ListTools
         Application.DoEvents()
     End Sub
     Private Sub Button4_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button4.Click
-       Dim items = textbox1.Text.Split(vbnewline)
-        dim x as Integer = 0
-        for each item in items
-            
+        Dim items = TextBox1.Text.Split(vbNewLine)
+        Dim x As Integer = 0
+        For Each item In items
+
             _outputTextbox.Text &= item & " = row[" & x & "]" & vbNewLine
-            x= x + 1
+            x = x + 1
 
         Next
     End Sub
@@ -188,7 +169,7 @@ Public Class ListTools
 
 
 
-                                     For Each subItem In itemSubSplit(1).split(CChar("#"))
+                                     For Each subItem In itemSubSplit(1).Split(CChar("#"))
                                          myList.Add(subItem & "@" & subtype & vbNewLine)
                                      Next
                                  End Sub)
@@ -223,7 +204,7 @@ Public Class ListTools
             Try
                 Dim data() As String = itemType.Split(":")
                 Dim slot As String = data(0).Trim
-                For Each item In data(1).split(CChar("#"))
+                For Each item In data(1).Split(CChar("#"))
                     item = StrConv(item, vbProperCase)
                     outputTextbox.Text &= String.Format("Case """ & item & """ : localstring = ""[Name]{0}@[Slot]{1}@[Effect]{2}""", {item, slot, item.Replace(" ", "").Replace("+", "")}) & vbNewLine
 
@@ -236,32 +217,32 @@ Public Class ListTools
     End Sub
 
     Private Sub Button26_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button26.Click
-        StringFormatArray
+        StringFormatArray()
     End Sub
-      Public Sub StringFormatArray()
+    Public Sub StringFormatArray()
         Dim list As New List(Of String)
         For Each item In TextBox1.Text.Split(Environment.NewLine)
-            if item= "" or item = " "
+            If item = "" Or item = " " Then
                 Continue For
             End If
-           
+
 
             Dim splitItem = item.Split(",")
-   
 
-            outputTextbox.Text &= _
+
+            outputTextbox.Text &=
                      String.Format(txtStringFormat.Text, splitItem) & vbNewLine
 
         Next
     End Sub
     Public Sub StringFormatSingle()
-Dim list As New List(Of String)
+        Dim list As New List(Of String)
         For Each item In TextBox1.Text.Split(Environment.NewLine)
             item = item.Replace(Chr(10), "")
             item = item.Replace(Chr(13), "")
             item = item.Trim
 
-            outputTextbox.Text &= _
+            outputTextbox.Text &=
                      String.Format(txtStringFormat.Text, item) & vbNewLine
 
         Next
@@ -284,15 +265,6 @@ Dim list As New List(Of String)
             TextBox1.Text = System.IO.File.ReadAllText(fileName)
 
         End If
-    End Sub
-
-    Private Sub Button7_Click_1(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button7.Click
-        Dim list As New List(Of String)
-        For Each item In ListBox1.Items
-            list.Add(item)
-        Next
-        '  outputTextbox.Text = myExcel.parseInfo(InputBox("Tag name? IE the classification"), list.ToArray)
-
     End Sub
 
     Private Sub FileToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles FileToolStripMenuItem.Click
@@ -347,22 +319,14 @@ Dim list As New List(Of String)
     End Sub
 
     Private Sub EnumCreationToolStripMenuItem_Click(sender As System.Object, e As System.EventArgs) Handles EnumCreationToolStripMenuItem.Click
-        condenseEnums()
+        outputTextbox.Text = ViewModel.CondenseEnums(TextBox1.Text)
     End Sub
 
-Private Sub Button12_Click_1( sender As Object,  e As EventArgs) Handles Button12.Click
-        'Speak(_outputTextbox.Text)
-
-    End Sub
-
-
-
-    Private Sub Button13_Click_1( sender As Object,  e As EventArgs) Handles Button13.Click
+    Private Sub Button13_Click_1(sender As Object, e As EventArgs) Handles Button13.Click
         Dim text As String = TextBox1.Text
-        text = text.Replace(Environment.NewLine,  ";" & Environment.NewLine )
-
-        for x As Integer = 1 To 100
-            text = text.Replace("Case " & x & " To ","if(roll <= ")
+        text = text.Replace(Environment.NewLine, ";" & Environment.NewLine)
+        For x As Integer = 1 To 100
+            text = text.Replace("Case " & x & " To ", "if(roll <= ")
         Next
         outputTextbox.Text = text
 
